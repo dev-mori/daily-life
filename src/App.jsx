@@ -99,7 +99,6 @@ const SampleCalendar = (props) => {
     const title = event.title;
     const start = event.start;
     const end = event.end;
-
     setInputTitle(title);
     setInputStart(start);
     setInputEnd(end);
@@ -116,6 +115,7 @@ const SampleCalendar = (props) => {
   const handleSelect = (selectinfo) => {
     const start = new Date(selectinfo.start);
     const end = new Date(selectinfo.end);
+    console.log(start);
     start.setHours(start.getHours());
     end.setHours(end.getHours());
 
