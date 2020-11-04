@@ -1,14 +1,14 @@
 import React from "react";
-import DatePicker from "react-datepicker";
 import Modal from "@material-ui/core/Modal";
 import Fade from "@material-ui/core/Fade";
-import Input from "@material-ui/core/Input";
 import TextField from "@material-ui/core/TextField";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
+// import DatePicker from "react-datepicker";
+// import Input from "@material-ui/core/Input";
 
 const Wrapper = styled.div`
-  width: 400px;
+  width: 420px;
   padding: 10px;
   margin: 0 auto;
   background-color: white;
@@ -22,6 +22,11 @@ const Title = styled.div`
 const TitleText = styled.h2`
   margin: 0;
 `;
+const Datepick = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px;
+`;
 
 export default function EventModal({
   inputTitle,
@@ -32,13 +37,19 @@ export default function EventModal({
   setInputEnd,
   inView,
   setInView,
-  onAddEvent,
+  on_add_event,
 }) {
   const handleClose = () => {
     setInView(false);
   };
-  const { register, handleSubmit, errors } = useForm();
-  const on_submit = (data) => {};
+  const { register, handleSubmit } = useForm();
+  const on_submit = (data) => {
+    setInputTitle(data.title);
+    setInputStart(new Date(data.startTime));
+    setInputEnd(new Date(data.endTime));
+
+    on_add_event();
+  };
   return (
     <Modal
       aria-labelledby="transition-modal-title"
@@ -54,66 +65,43 @@ export default function EventModal({
               <TitleText>予定を入力</TitleText>
             </Title>
             <TextField
+              name="title"
               type="text"
-              value={inputTitle}
-              name="inputTitle"
               id="standard-basic"
               label="タイトル"
+              autoComplete="title"
+              autoFocus
+              inputRef={register}
             />
-            {/* <DatePicker
-              locale="ja"
-              dateFormat="yyyy/MM/d HH:mm"
-              selected={inputStart}
-              showTimeSelect
-              timeFormat="HH:mm"
-              timeIntervals={10}
-              todayButton="today"
-              name="inputStart"
-              onChange={(time) => {
-                setInputStart(time);
-                console.log(time);
-              }}
-            /> */}
-            {/* <DatePicker
-              locale="ja"
-              dateFormat="yyyy/MM/d HH:mm"
-              selected={inputEnd}
-              showTimeSelect
-              timeFormat="HH:mm"
-              timeIntervals={10}
-              todayButton="today"
-              name="inputEnd"
-              onChange={(time) => {
-                setInputEnd(time);
-                console.log(time);
-              }}
-              /> */}
-            <TextField
-              id="datetime-local"
-              label="Next appointment"
-              type="datetime-local"
-              defaultValue="2020-11-02T10:30"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              onChange={(e) => {
-                setInputStart(e.target.value);
-                console.log(e.target.value);
-              }}
+            <Datepick>
+              <TextField
+                name="startTime"
+                id="datetime-local"
+                label="開始日時"
+                type="datetime-local"
+                defaultValue={inputStart}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                inputRef={register}
+              />
+              <TextField
+                name="endTime"
+                id="datetime-local"
+                label="終了日時"
+                type="datetime-local"
+                defaultValue={inputEnd}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                inputRef={register}
+              />
+            </Datepick>
+            <input
+              type="button"
+              value="保存"
+              onClick={handleSubmit(on_submit)}
             />
-            <TextField
-              id="datetime-local"
-              label="Next appointment"
-              type="datetime-local"
-              defaultValue="2017-05-24T10:30"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              onChange={(time) => {
-                setInputEnd(time);
-              }}
-            />
-            <input type="button" value="保存" onClick={() => onAddEvent()} />
           </form>
         </Wrapper>
       </Fade>
