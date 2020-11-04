@@ -28,11 +28,11 @@ registerLocale("ja", ja);
 
 const Calendar = (props) => {
   const ref = React.createRef();
-  const [inputTitle, setInputTitle] = useState(""); // フォームに入力されたタイトル。
-  const [inputStart, setInputStart] = useState(new Date()); // イベントの開始時刻。
-  const [inputEnd, setInputEnd] = useState(new Date()); // イベントの終了時刻。
-  const [inView, setInView] = useState(false); // イベント登録フォームの表示有無。(trueなら表示する。)
-  const [myEvents, setMyEvents] = useState([]); // 登録されたイベントが格納されていく。myEventsTypタイプの配列。
+  const [inputTitle, setInputTitle] = useState("");
+  const [inputStart, setInputStart] = useState(new Date());
+  const [inputEnd, setInputEnd] = useState(new Date());
+  const [inView, setInView] = useState(false);
+  const [myEvents, setMyEvents] = useState([]);
 
   const handleCLick = (info) => {
     const event = myEvents[info.event.id];
@@ -45,41 +45,35 @@ const Calendar = (props) => {
     setInView(true);
   };
   const handleSelect = (selectinfo) => {
-    const start = new Date(selectinfo.start);
-    const end = new Date(selectinfo.end);
-    console.log(start);
-    start.setHours(start.getHours());
-    end.setHours(end.getHours());
-    setInputTitle("");
+    const start = new Date(selectinfo.start).toISOString().substr(0, 16);
+    const end = new Date(selectinfo.end).toISOString().substr(0, 16);
+    // console.log(start);
+    // console.log(end);
+    setInputTitle("aaa");
     setInputStart(start);
     setInputEnd(end);
     setInView(true);
-    console.log(inView);
   };
-  const onAddEvent = () => {
-    const startTime = inputStart;
-    const endTime = inputEnd;
-
-    if (startTime >= endTime) {
-      alert("開始時間と終了時間を確認してください。");
-      return;
-    }
+  const on_add_event = () => {
+    // const startTime = inputStart;
+    // const endTime = inputEnd;
+    // if (startTime >= endTime) {
+    //   alert("開始時間と終了時間を確認してください。");
+    //   return;
+    // }
+    // const aa = new Date("Mon Nov 02 2020 09:00:00 GMT+0900 (日本標準時)");
     const event = {
       id: myEvents.length,
       title: inputTitle,
-      start: startTime,
-      end: endTime,
+      start: new Date(inputStart),
+      end: new Date(inputEnd),
     };
     console.log(event);
-
-    // Stateにイベントを追加する。ここで登録されたイベントは、予定を変更するときなどに使用する。
+    console.log(ref);
     setMyEvents([...myEvents, event]);
-
-    // カレンダーに予定を登録して表示するための処理。
     ref.current.getApi().addEvent(event);
+    setInView(false);
   };
-
-  console.log(inView);
   return (
     <div>
       <FullCalendar
@@ -118,9 +112,9 @@ const Calendar = (props) => {
           setInputStart={setInputStart}
           inputEnd={inputEnd}
           setInputEnd={setInputEnd}
-          inView={true}
+          inView={inView}
           setInView={setInView}
-          onAddEvent={onAddEvent}
+          on_add_event={on_add_event}
         />
       </Modal>
     </div>
